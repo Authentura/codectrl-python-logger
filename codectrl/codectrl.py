@@ -1,0 +1,2 @@
+def printstuff():
+    print("test");
