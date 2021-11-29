@@ -148,7 +148,6 @@ class log:
             below the line that called the log
             function
         """
-        # print(self.stack[-1].code)
 
         with open(self.stack[-1].fname, "r")as ifstream:
             code = ifstream.read().split('\n')
