@@ -80,8 +80,6 @@ class Log:
         stack.pop()
         stack.pop()
 
-        # print stack: debug
-        print(json.dumps(stack, indent=4))
         return stack
 
 
@@ -123,6 +121,23 @@ class Log:
         return useful_lines
 
 
+    def json(self) -> dict:
+        """ Return all data collected as json """
+
+        return {
+                "message"      : self.message,
+                "message_type" : self.message_type,
+                "line_number"  : self.line_number,
+                "code_snippet" : self.code_snippet,
+                "file_name"    : self.file_name,
+                "stack"        : self.stack,
+                "warning"      : self.warning
+                }
+
+
+    def cbor(self) -> str:
+        """ Returns cbor string of collected data """
+        return cbor2.dumps(self.json())
 
 
 
@@ -144,6 +159,8 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
     assert type(surround) == int, "surround variable has to be an intiger"
 
     log_obj = Log(surround, *args, **kwargs)
+    print(json.dumps(log_obj.json(), indent=4))
+    print(log_obj.cbor())
 
     # send(log_obj.cbor())
 
