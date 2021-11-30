@@ -1,9 +1,10 @@
 import sys
 import json
-import traceback
+import cbor2
+import socket
 import inspect
 
-import cbor2
+# debug
 from pprint import pprint
 
 
@@ -111,7 +112,11 @@ class Log:
         useful_lines = {}
         for i in range(self.line_number-surround, self.line_number+surround):
             try:
-                useful_lines[str(i)] = source_code[i]
+                # Just ignore values where i < 0
+                if i >= 0:
+                    # plus 1 is added, as most IDE's start count
+                    # at 1, whereas python starts at 0
+                    useful_lines[str(i+1)] = source_code[i]
             except IndexError:
                 # Can ignore this error as it
                 # likely just means that there
@@ -131,7 +136,8 @@ class Log:
                 "code_snippet" : self.code_snippet,
                 "file_name"    : self.file_name,
                 "stack"        : self.stack,
-                "warning"      : self.warning
+                "warnings"     : self.warning,
+                "address"      : "127.0.0.1" # temp
                 }
 
 
@@ -143,14 +149,8 @@ class Log:
 
 
 
-
-
-
-
-
 def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
     """ Function that henles the logging """
-    print(f"{host=}\n{port=}\n{surround=}\n")
 
     # This makes it easier for users of the library
     # to debug errors they caused.
@@ -158,9 +158,21 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
     assert type(port)     == int, "port variable has to be an intiger"
     assert type(surround) == int, "surround variable has to be an intiger"
 
-    log_obj = Log(surround, *args, **kwargs)
-    print(json.dumps(log_obj.json(), indent=4))
-    print(log_obj.cbor())
+    # Try connect to the server.
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('127.0.0.1', 3001))
+    except Exception as e:
+        print("An error occured while codeCTRL logger was trying to connect to server: {e}", file=sys.stderr)
+        sys.exit(-1)
 
-    # send(log_obj.cbor())
+    # Collect logging data
+    log_obj = Log(surround, *args, **kwargs)
+
+    # Send logging data to server
+    s.send(log_obj.cbor())
+    # s.send(b'\0')
+
+    # close socket
+    s.close()
 
