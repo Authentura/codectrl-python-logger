@@ -14,8 +14,8 @@ class Log:
     def __init__(self, surround: int,  *args, **kwargs):
         """
             The __init__ function does most of the
-            work in this class as we dont want to
-            seperately run a method of each log.
+            work in this class as we don't want to
+            separately run a method of each log.
         """
         # Warning message if anything goes wrong
         self.warning = []
@@ -70,7 +70,7 @@ class Log:
                     "column_number": 0,
                     })
 
-        # Reverse the stack as it should be fifo
+        # Reverse the stack as it should be FIFO
         stack = stack[::-1]
         
         # remove the functions called inside this module
@@ -102,7 +102,7 @@ class Log:
                 source_code = ifstream.read().split('\n')
 
         except Exception as e:
-            self.warning.append(f"An error occured in library file while reading code: {e}")
+            self.warning.append(f"An error occurred in library file while reading code: {e}")
             return []
 
         ## get only the {surround} above and below the log call
@@ -147,20 +147,52 @@ class Log:
 
 
 def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
-    """ Function that henles the logging """
+    """
+        Create `Log` object and send to codeCTRL server in cbor format.
+
+        The codectrl.log function collects and formats information about
+        the file/function/line of code it got called on and sends it to
+        the codeCTRL server, if available.
+
+
+        Usage:
+            The function takes any number of arbitrary positional
+            and keyword arguments. 
+
+            All positional arguments get included in the log `message`
+            using str() or json.dumps(obj, indent=4) in case of dicts.
+
+            Keyword arguments, other than `reserved` ones, get appended
+            to the logs as {key}={value}
+
+
+        Reserved arguments:
+            * host:
+                By default set to `127.0.0.1`, this argument
+                holds the address of the codeCTRL server.
+
+            * port:
+                By default set to `30001`, this is the port
+                the codeCTRL server should be contacted at.
+
+            * surround:
+                By default `3`, this argument specifies the
+                number of lines of code that should be displayed
+                around the call to `codectrl.log`.
+    """
 
     # This makes it easier for users of the library
     # to debug errors they caused.
     assert type(host)     == str, "host variable has to be a string"
-    assert type(port)     == int, "port variable has to be an intiger"
-    assert type(surround) == int, "surround variable has to be an intiger"
+    assert type(port)     == int, "port variable has to be an integer"
+    assert type(surround) == int, "surround variable has to be an integer"
 
     # Try connect to the server.
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(('127.0.0.1', 3001))
     except Exception as e:
-        print("An error occured while codeCTRL logger was trying to connect to server: {e}", file=sys.stderr)
+        print("An error occurred while codeCTRL logger was trying to connect to server: {e}", file=sys.stderr)
         sys.exit(-1)
 
     # Collect logging data
