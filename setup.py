@@ -29,8 +29,8 @@ DEPENDENCIES=[
 setup(
         name="codectrl",
         version=VERSION,
-        authur="pwnCTRL",
-        authur_email="cotact@pwnctrl.com",
+        author="pwnCTRL",
+        author_email="cotact@pwnctrl.com",
         description=DESCRIPTION,
         long_description_content_type="text/markdown",
         long_description=LONG_DESCRIPTION,
@@ -40,7 +40,7 @@ setup(
         classifiers=[
             "Development Status :: First stable version, not complete",
             "Intended Audience :: Package is intended for vulnerability research and other code-review",
-            "Programing Language :: python :: 3",
+            "Programming Language :: python :: 3",
             "Operating system :: Unix",
             "Operating system :: MacOS :: MacOS X",
             "Operating system :: Microsoft :: Windows"
