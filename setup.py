@@ -29,6 +29,7 @@ DEPENDENCIES=[
 setup(
         name="codectrl",
         version=VERSION,
+        license="MIT",
         author="pwnCTRL",
         author_email="cotact@pwnctrl.com",
         description=DESCRIPTION,
@@ -38,9 +39,9 @@ setup(
         install_requires=DEPENDENCIES,
         keywords=SEARCH_KEYWORDS,
         classifiers=[
-            "Development Status :: First stable version, not complete",
-            "Intended Audience :: Package is intended for vulnerability research and other code-review",
-            "Programming Language :: python :: 3",
+            "Development Status :: 4 - Beta",
+            "Intended Audience :: Developers",
+            "Programming Language :: Python :: 3.9",
             "Operating system :: Unix",
             "Operating system :: MacOS :: MacOS X",
             "Operating system :: Microsoft :: Windows"
