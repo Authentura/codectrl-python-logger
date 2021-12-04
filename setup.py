@@ -42,8 +42,8 @@ setup(
             "Development Status :: 4 - Beta",
             "Intended Audience :: Developers",
             "Programming Language :: Python :: 3.9",
-            "Operating system :: Unix",
-            "Operating system :: MacOS :: MacOS X",
-            "Operating system :: Microsoft :: Windows"
+            "Operating System :: Unix",
+            "Operating System :: MacOS :: MacOS X",
+            "Operating System :: Microsoft :: Windows"
             ]
         )
