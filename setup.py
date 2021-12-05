@@ -31,7 +31,7 @@ setup(
         version=VERSION,
         license="MIT",
         author="pwnCTRL",
-        author_email="cotact@pwnctrl.com",
+        author_email="contact@pwnctrl.com",
         description=DESCRIPTION,
         long_description_content_type="text/markdown",
         long_description=LONG_DESCRIPTION,
