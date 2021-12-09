@@ -27,7 +27,7 @@ Build the package:
 python3 setup.py build
 ```
 Install the package.
-Depending on your python install this may require root privilages.
+Depending on your python install this may require root privileges.
 ```
 (sudo) python3 setup.py install
 ```
@@ -55,7 +55,7 @@ to the logs as {key}={value}
   By default set to `127.0.0.1`, this argument holds the address of the codeCTRL server.
 
 * port:
-  By default set to `30001`, this is the port the codeCTRL server should be contacted at.
+  By default set to `3001`, this is the port the codeCTRL server should be contacted at.
 
 * surround:
   By default `3`, this argument specifies the number of lines of code that should be displayed around the call to `codectrl.log`.
