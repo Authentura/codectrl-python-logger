@@ -64,7 +64,7 @@ class Log:
         for stack_entry in inspect.stack():
             stack.append({
                     "name":          stack_entry.function,
-                    "code":          stack_entry.code_context[0].strip().strip("\n"),
+                    "code":          (stack_entry.code_context[0].strip().strip("\n") if stack_entry.code_context != None else "None"),
                     "file_path":     stack_entry.filename,
                     "line_number":   stack_entry.lineno,
                     "column_number": 0,
@@ -72,7 +72,7 @@ class Log:
 
         # Reverse the stack as it should be FIFO
         stack = stack[::-1]
-        
+
         # remove the functions called inside this module
         stack.pop()
         stack.pop()
