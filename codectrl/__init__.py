@@ -21,7 +21,7 @@ class Log:
         self.warning = []
 
         # format and normalise the message
-        self.message_type = "&str"
+        self.message_type = (str(type(args[0])) if len(args) == 1 else "list")
         self.message = self._normalise_args(*args) + self._normalise_kwargs(**kwargs)
 
 
@@ -198,6 +198,9 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
     # Collect logging data
     log_obj = Log(surround, *args, **kwargs)
 
+    print(log_obj.json())
+    print(s)
+    print("sending")
     # Send logging data to server
     s.send(log_obj.cbor())
     # s.send(b'\0')
