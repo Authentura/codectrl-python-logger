@@ -190,7 +190,7 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
     # Try connect to the server.
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(('127.0.0.1', 3001))
+        s.connect((host, port))
     except Exception as e:
         print(f"An error occurred while codeCTRL logger was trying to connect to server: {e}", file=sys.stderr)
         sys.exit(-1)
@@ -198,7 +198,7 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
     # Collect logging data
     log_obj = Log(surround, *args, **kwargs)
 
-    print(log_obj.json())
+    print(json.dumps(log_obj.json(), indent=4))
     print(s)
     print("sending")
     # Send logging data to server
