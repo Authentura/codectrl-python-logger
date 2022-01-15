@@ -198,9 +198,6 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
     # Collect logging data
     log_obj = Log(surround, *args, **kwargs)
 
-    print(json.dumps(log_obj.json(), indent=4))
-    print(s)
-    print("sending")
     # Send logging data to server
     s.send(log_obj.cbor())
     # s.send(b'\0')
