@@ -1,8 +1,20 @@
+"""
+Python library for the codectrl-logger program.
+
+This library has a single logging function that upon being
+called, collects information about the callee and the environment.
+The function then sends this information to the codectrl server.
+
+More information on this can be found at:
+https://github.com/Authentura/codectrl/
+"""
+
+
 import sys
 import json
-import cbor2
 import socket
 import inspect
+import cbor2
 
 
 class Log:
@@ -18,53 +30,72 @@ class Log:
             separately run a method of each log.
         """
         # Warning message if anything goes wrong
-        self.warning = []
+        self.warning: list[str] = []
 
-        # format and normalise the message
-        self.message_type = (str(type(args[0])) if len(args) == 1 else "list")
-        self.message = self._normalise_args(*args) + self._normalise_kwargs(**kwargs)
+        # Set the message type based on the included arguments.
+        # If there is only one argument then set
+        # the message type to the type of the single argument.
+        # If there are more arguments then set it to the string "list"
+        self.message_type: str = (str(type(args[0])) if len(args) == 1 else "list")
+
+        # Get the message arguments
+        # These 2 functions set the append the messages
+        # to the `message` instance variable.
+        self.message: str = ""
+        self._normalise_args(*args)
+        self._normalise_kwargs(**kwargs)
 
 
-        # format the stack
-        self.stack        = self._get_stack()
-        # get file_name
-        self.file_name    = self._get_caller_file_name()
+        # Format and assign the stack
+        self.stack: list[dict[str, str|int]] = []
+        self._get_stack()
+
+        # Get and set filename
+        self.file_name: str = ""
+        self._get_caller_file_name()
+
         # get line number
-        self.line_number  = self._get_caller_line_number()
+        self.line_number: int = 0
+        self._get_caller_line_number()
+
         # get code_snippet
-        self.code_snippet = self._get_code_snippet(surround)
+        self.code_snippet: dict[str,str] = {}
+        self._get_code_snippet(surround)
 
 
 
-    def _normalise_args(self, *args) -> str:
+    def _normalise_args(self, *args) -> None:
         """ Create a string out of *args """
-        string = ""
         for argument in args:
-            string += str(argument) + "  "
-        return string
+            self.message+= str(argument) + "  "
 
 
 
-    def _normalise_kwargs(self, **kwargs) -> str:
+    def _normalise_kwargs(self, **kwargs) -> None:
         """ Create a string out of **kwargs** """
-        string = ""
-        for k, v in kwargs.items():
-            string += f"{k}='{v}'  "
-        return string
+        for key, val in kwargs.items():
+            self.message += f"{key}='{val}'  "
 
 
 
-    def _get_stack(self) -> list:
+    def _get_stack(self) -> None:
         """
-            Get the current stack and format it according to spec:
+            Set self.stack to the stack according to the following specifications:
             https://github.com/pwnCTRL/codectrl/blob/main/loggers/SCHEMA.md
         """
 
-        stack = []
+        stack: list[dict[str, str|int]] = []
         for stack_entry in inspect.stack():
+
+            # code_context is doesn't always exist, not exactly sure why.
+            if stack_entry.code_context is not None:
+                code: str = stack_entry.code_context[0].strip().strip("\n")
+            else:
+                code = "None"
+
             stack.append({
+                    "code":          code,
                     "name":          stack_entry.function,
-                    "code":          (stack_entry.code_context[0].strip().strip("\n") if stack_entry.code_context != None else "None"),
                     "file_path":     stack_entry.filename,
                     "line_number":   stack_entry.lineno,
                     "column_number": 0,
@@ -73,40 +104,49 @@ class Log:
         # Reverse the stack as it should be FIFO
         stack = stack[::-1]
 
-        # remove the functions called inside this module
+        # Remove all calls from the stack that happened from
+        # within the logging function. If there is a new function
+        # added before calling stack.inspect() then add an extra
+        # stack.pop() accordingly.
         stack.pop()
         stack.pop()
         stack.pop()
 
-        return stack
+        self.stack = stack
 
 
 
-    def _get_caller_file_name(self) -> str:
+    def _get_caller_file_name(self) -> None:
         """ Get filename of the caller function """
-        return inspect.stack()[3].filename
+        self.file_name = inspect.stack()[3].filename
 
-    def _get_caller_line_number(self) -> str:
+    def _get_caller_line_number(self) -> None:
         """ Get filename of the caller function """
-        return inspect.stack()[3].lineno
+        self.line_number = inspect.stack()[3].lineno
 
 
-    def _get_code_snippet(self, surround: int) -> dict:
+    def _get_code_snippet(self, surround: int) -> None:
         """
-            Get a {surround} lines above and below
-            the line of code calling log
+            Function gets {surround} number of lines
+            of code from above and below the line that
+            called codectrl.log.
+
+            This helps the person working with the code
+            to debug and quickly identify where it is
+            coming from.
         """
 
         try:
-            with open(self.file_name, "r")as ifstream:
+            with open(self.file_name, "r", encoding='utf-8')as ifstream:
                 source_code = ifstream.read().split('\n')
 
-        except Exception as e:
-            self.warning.append(f"An error occurred in library file while reading code: {e}")
-            return []
+        except Exception as err: # pylint: disable=broad-except # This needs to be broad.
+            self.warning.append(f"An error occurred in library file while reading code: {err}")
+            return
+
 
         ## get only the {surround} above and below the log call
-        useful_lines = {}
+        useful_lines: dict[str,str] = {}
         for i in range(self.line_number-surround, self.line_number+surround):
             try:
                 # Just ignore values where i < 0
@@ -120,7 +160,7 @@ class Log:
                 # are no more lines in the file.
                 pass
 
-        return useful_lines
+        self.code_snippet = useful_lines
 
 
     def json(self) -> dict:
@@ -138,7 +178,7 @@ class Log:
                 }
 
 
-    def cbor(self) -> str:
+    def cbor(self) -> bytes:
         """ Returns cbor string of collected data """
         return cbor2.dumps(self.json())
 
@@ -146,7 +186,7 @@ class Log:
 
 
 
-def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
+def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> bool:
     """
         Create `Log` object and send to codeCTRL server in cbor format.
 
@@ -156,8 +196,8 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
 
 
         Usage:
-            The function takes any number of arbitrary positional
-            and keyword arguments. 
+            The function takes any number of positional
+            or keyword arguments of all types.
 
             All positional arguments get included in the log `message`
             using str() or json.dumps(obj, indent=4) in case of dicts.
@@ -183,27 +223,25 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> int:
 
     # This makes it easier for users of the library
     # to debug errors they caused.
-    assert type(host)     == str, "host variable has to be a string"
-    assert type(port)     == int, "port variable has to be an integer"
-    assert type(surround) == int, "surround variable has to be an integer"
+    assert isinstance(host, str), "host variable has to be a string"
+    assert isinstance(port, int), "port variable has to be an integer"
+    assert isinstance(surround, int), "surround variable has to be an integer"
 
     # Try connect to the server.
     try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((host, port))
-    except Exception as e:
-        print(f"[codeCTRL] Could not reach codeCTRL server. {e}", file=sys.stderr)
+        soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        soc.connect((host, port))
+    except Exception as err: # pylint: disable=broad-except # Could be many things.
+        print(f"[codeCTRL] Could not reach codeCTRL server. {err}", file=sys.stderr)
         return False
 
     # Collect logging data
-    log_obj = Log(surround, *args, **kwargs)
+    log_obj: Log = Log(surround, *args, **kwargs)
 
     # Send logging data to server
-    s.send(log_obj.cbor())
+    soc.send(log_obj.cbor())
     # s.send(b'\0')
 
     # close socket
-    s.close()
-
-
-
+    soc.close()
+    return True
