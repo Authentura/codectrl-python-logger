@@ -8,7 +8,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fd:
     long_description = "\n" + fd.read()
 
-VERSION = '0.1.6'
+VERSION = '0.1.7'
 DESCRIPTION = "A python logger module for the codeCTRL application"
 LONG_DESCRIPTION = long_description
 SEARCH_KEYWORDS=[

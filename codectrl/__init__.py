@@ -174,7 +174,8 @@ class Log:
                 "file_name"    : self.file_name,
                 "stack"        : self.stack,
                 "warnings"     : self.warning,
-                "address"      : "127.0.0.1" # temp
+                "address"      : "", # temp
+                "language"     : "python"
                 }
 
 
