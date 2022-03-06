@@ -175,7 +175,7 @@ class Log:
                 "stack"        : self.stack,
                 "warnings"     : self.warning,
                 "address"      : "", # temp
-                "language"     : "python"
+                "language"     : "Python"
                 }
 
 
