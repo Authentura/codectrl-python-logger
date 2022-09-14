@@ -10,11 +10,13 @@ https://github.com/Authentura/codectrl/
 """
 
 
+from locale import CODESET
 import sys
 import json
 import socket
 import inspect
 import cbor2
+import os
 
 
 class Log:
@@ -23,7 +25,7 @@ class Log:
         to it and other wise collected data to create a json and cbor
         object as described by https://github.com/pwnCTRL/codectrl/blob/main/loggers/SCHEMA.md
     """
-    def __init__(self, surround: int,  *args, **kwargs):
+    def __init__(self, surround: int, stack_ignore: int, *args, **kwargs):
         """
             The __init__ function does most of the
             work in this class as we don't want to
@@ -48,6 +50,7 @@ class Log:
 
         # Format and assign the stack
         self.stack: list[dict[str, str|int]] = []
+        self.stack_ignore = stack_ignore
         self._get_stack()
 
         # Get and set filename
@@ -108,9 +111,10 @@ class Log:
         # within the logging function. If there is a new function
         # added before calling stack.inspect() then add an extra
         # stack.pop() accordingly.
-        stack.pop()
-        stack.pop()
-        stack.pop()
+        self.stack_ignore += 1
+
+        for i in range(self.stack_ignore):
+            stack.pop()
 
         self.stack = stack
 
@@ -184,10 +188,17 @@ class Log:
         return cbor2.dumps(self.json())
 
 
+def log_when_env(*args, **kwargs):
+    if os.environ.get('CODECTRL_DEBUG') == None:
+        return 
+    if os.environ.get('CODECTRL_DEBUG').strip().upper() == 'TRUE':
+        log(*args, _stack_ignore=2, **kwargs)
+    elif os.environ.get('CODECTRL_DEBUG') == bool(int("1")):
+        log(*args, _stack_ignore=2, **kwargs)
+    return 
 
 
-
-def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> bool:
+def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwargs) -> bool:
     """
         Create `Log` object and send to codeCTRL server in cbor format.
 
@@ -237,7 +248,7 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> bool:
         return False
 
     # Collect logging data
-    log_obj: Log = Log(surround, *args, **kwargs)
+    log_obj: Log = Log(surround, _stack_ignore,*args, **kwargs)
 
     # Send logging data to server
     soc.send(log_obj.cbor())
