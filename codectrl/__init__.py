@@ -186,7 +186,7 @@ class Log:
         return cbor2.dumps(self.json())
 
 
-def log_when_env(*args, **kwargs):
+def log_when_env(*args, _stack_ignore=2,**kwargs):
         """
             Checks the 'CODECTRL_DEBUG' enviorment variable and if 
             the variable is set to True. If the enviorment variable
@@ -208,9 +208,9 @@ def log_when_env(*args, **kwargs):
         if debug_mode == None:
             return False 
         elif debug_mode.strip().upper() == 'TRUE':
-            log(*args, _stack_ignore=2, **kwargs)
+            log(*args, _stack_ignore, **kwargs)
         elif debug_mode.strip() == bool(int("1")):
-            log(*args, _stack_ignore=2, **kwargs)
+            log(*args, _stack_ignore, **kwargs)
         return True
 
 
