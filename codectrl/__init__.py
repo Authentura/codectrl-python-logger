@@ -207,7 +207,7 @@ def log_when_env(*args, **kwargs):
 
         if debug_mode == None:
             return False 
-        if debug_mode.strip().upper() == 'TRUE':
+        elif debug_mode.strip().upper() == 'TRUE':
             log(*args, _stack_ignore=2, **kwargs)
         elif debug_mode.strip() == bool(int("1")):
             log(*args, _stack_ignore=2, **kwargs)
