@@ -1,3 +1,12 @@
+"""
+Python library for the codectrl-logger program.
+
+This library is used for setting up codectrl
+
+More information on this can be found at:
+https://github.com/Authentura/codectrl/
+"""
+
 import os
 import codecs
 from setuptools import setup, find_packages

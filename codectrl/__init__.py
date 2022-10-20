@@ -15,8 +15,8 @@ import sys
 import json
 import socket
 import inspect
-import cbor2
 import os
+import cbor2
 
 
 class Log:
@@ -108,10 +108,10 @@ class Log:
         stack = stack[::-1]
 
         # Remove all calls from the stack that happened from
-        # within the logging function. 
+        # within the logging function.
         self.stack_ignore += 1
 
-        for i in range(self.stack_ignore):
+        for _ in range(self.stack_ignore):
             stack.pop()
 
         self.stack = stack
@@ -187,8 +187,8 @@ class Log:
 
 
 def log_when_env(*args, _stack_ignore=2,**kwargs):
-        """
-            Checks the 'CODECTRL_DEBUG' enviorment variable and if 
+    """
+            Checks the 'CODECTRL_DEBUG' enviorment variable and if
             the variable is set to True. If the enviorment variable
             is set to True then a log will be created.
 
@@ -203,15 +203,15 @@ def log_when_env(*args, _stack_ignore=2,**kwargs):
             using str() or json.dumps(obj, indent=4) in case of dicts.
 
         """
-        debug_mode = os.environ.get('CODECTRL_DEBUG')
+    debug_mode = os.environ.get('CODECTRL_DEBUG')
 
-        if debug_mode == None:
-            return False 
-        elif debug_mode.strip().upper() == 'TRUE':
-            log(*args, _stack_ignore, **kwargs)
-        elif debug_mode.strip() == bool(int("1")):
-            log(*args, _stack_ignore, **kwargs)
-        return True
+    if debug_mode is None:
+        return False
+    elif debug_mode.strip().upper() == 'TRUE':
+        log(*args, _stack_ignore, **kwargs)
+    elif debug_mode.strip() == bool(int("1")):
+        log(*args, _stack_ignore, **kwargs)
+    return True
 
 
 def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwargs) -> bool:
