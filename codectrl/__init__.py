@@ -108,9 +108,7 @@ class Log:
         stack = stack[::-1]
 
         # Remove all calls from the stack that happened from
-        # within the logging function. If there is a new function
-        # added before calling stack.inspect() then add an extra
-        # stack.pop() accordingly.
+        # within the logging function. 
         self.stack_ignore += 1
 
         for i in range(self.stack_ignore):
@@ -189,13 +187,31 @@ class Log:
 
 
 def log_when_env(*args, **kwargs):
-    if os.environ.get('CODECTRL_DEBUG') == None:
-        return 
-    if os.environ.get('CODECTRL_DEBUG').strip().upper() == 'TRUE':
-        log(*args, _stack_ignore=2, **kwargs)
-    elif os.environ.get('CODECTRL_DEBUG') == bool(int("1")):
-        log(*args, _stack_ignore=2, **kwargs)
-    return 
+        """
+            Checks the 'CODECTRL_DEBUG' enviorment variable and if 
+            the variable is set to True. If the enviorment variable
+            is set to True then a log will be created.
+
+            The codectrl.log function collects and formats information about
+            the file/function/line of code it got called on and sends it to
+            the codeCTRL server, if available.
+
+            Usage:
+            The function takes two perameters (*args and **kwargs)
+
+            All positional arguments get included in the log `message`
+            using str() or json.dumps(obj, indent=4) in case of dicts.
+
+        """
+        debug_mode = os.environ.get('CODECTRL_DEBUG')
+
+        if debug_mode == None:
+            return False 
+        if debug_mode.strip().upper() == 'TRUE':
+            log(*args, _stack_ignore=2, **kwargs)
+        elif debug_mode.strip() == bool(int("1")):
+            log(*args, _stack_ignore=2, **kwargs)
+        return True
 
 
 def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwargs) -> bool:
@@ -231,6 +247,8 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwarg
                 By default `3`, this argument specifies the
                 number of lines of code that should be displayed
                 around the call to `codectrl.log`.
+
+            *
     """
 
     # This makes it easier for users of the library
