@@ -209,7 +209,7 @@ def log_when_env(*args, _stack_ignore=2,**kwargs):
         return False
     elif debug_mode.strip().upper() == 'TRUE':
         log(*args, _stack_ignore, **kwargs)
-    elif debug_mode.strip() == bool(int("1")):
+    elif debug_mode.strip() == "1":
         log(*args, _stack_ignore, **kwargs)
     return True
 
