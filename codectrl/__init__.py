@@ -188,26 +188,29 @@ class Log:
 
 def log_when_env(*args, _stack_ignore=2,**kwargs):
     """
-            Checks the 'CODECTRL_DEBUG' enviorment variable and if
-            the variable is set to True. If the enviorment variable
-            is set to True then a log will be created.
+            Create `Log` object and send to codeCTRL server in cbor format when the enviorment variable is set
 
-            The codectrl.log function collects and formats information about
-            the file/function/line of code it got called on and sends it to
-            the codeCTRL server, if available.
+        The codectrl.log function collects and formats information about
+        the file/function/line of code it got called on and sends it to
+        the codeCTRL server, if available.
 
-            Usage:
-            The function takes two perameters (*args and **kwargs)
 
-            All positional arguments get included in the log `message`
-            using str() or json.dumps(obj, indent=4) in case of dicts.
+        Usage:
+            The function checks the enviroment variable 'debug_mode' and creates a log object
+            if set to TRUE.
 
-        """
+
+        Reserved arguments:
+            * _stack_ignore:
+                By default set to `2`. Remove all calls from the stack that happened from
+                within the logging function.
+
+    """
     debug_mode = os.environ.get('CODECTRL_DEBUG')
 
     if debug_mode is None:
         return False
-    elif debug_mode.strip().upper() == 'TRUE':
+    if debug_mode.strip().upper() == 'TRUE':
         log(*args, _stack_ignore, **kwargs)
     elif debug_mode.strip() == "1":
         log(*args, _stack_ignore, **kwargs)
@@ -248,7 +251,9 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwarg
                 number of lines of code that should be displayed
                 around the call to `codectrl.log`.
 
-            *
+            * _stack_ignore:
+                By default set to `2`. Remove all calls from the stack that happened from
+                within the logging function.
     """
 
     # This makes it easier for users of the library
