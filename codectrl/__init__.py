@@ -12,11 +12,9 @@ https://github.com/Authentura/codectrl/
 
 from locale import CODESET
 import sys
-import json
 import socket
 import inspect
 import os
-import cbor2
 
 
 class Logger:
@@ -181,9 +179,9 @@ class Logger:
                 }
 
 
-    def cbor(self) -> bytes:
-        """ Returns cbor string of collected data """
-        return cbor2.dumps(self.json())
+    # def cbor(self) -> bytes:
+    #     """ Returns cbor string of collected data """
+    #     return cbor2.dumps(self.json())
 
 
 def log_when_env(*args, _stack_ignore=2,**kwargs):
@@ -271,10 +269,10 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwarg
         return False
 
     # Collect logging data
-    log_obj: Logger = Logger(surround, _stack_ignore,*args, **kwargs)
+    # log_obj: Logger = Logger(surround, _stack_ignore,*args, **kwargs)
 
     # Send logging data to server
-    soc.send(log_obj.cbor())
+    # soc.send(log_obj.cbor())
     # s.send(b'\0')
 
     # close socket

@@ -34,7 +34,7 @@ SEARCH_KEYWORDS=[
         ]
 
 DEPENDENCIES=[
-        "cbor2==5.4.2"
+        "grpcio==1.50.0"
         ]
 
 setup(
