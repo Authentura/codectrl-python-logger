@@ -10,10 +10,12 @@ https://github.com/Authentura/codectrl/
 """
 
 
+from locale import CODESET
 import sys
 import json
 import socket
 import inspect
+import os
 import cbor2
 
 
@@ -23,7 +25,7 @@ class Log:
         to it and other wise collected data to create a json and cbor
         object as described by https://github.com/pwnCTRL/codectrl/blob/main/loggers/SCHEMA.md
     """
-    def __init__(self, surround: int,  *args, **kwargs):
+    def __init__(self, surround: int, stack_ignore: int, *args, **kwargs):
         """
             The __init__ function does most of the
             work in this class as we don't want to
@@ -48,6 +50,7 @@ class Log:
 
         # Format and assign the stack
         self.stack: list[dict[str, str|int]] = []
+        self.stack_ignore = stack_ignore
         self._get_stack()
 
         # Get and set filename
@@ -105,12 +108,11 @@ class Log:
         stack = stack[::-1]
 
         # Remove all calls from the stack that happened from
-        # within the logging function. If there is a new function
-        # added before calling stack.inspect() then add an extra
-        # stack.pop() accordingly.
-        stack.pop()
-        stack.pop()
-        stack.pop()
+        # within the logging function.
+        self.stack_ignore += 1
+
+        for _ in range(self.stack_ignore):
+            stack.pop()
 
         self.stack = stack
 
@@ -184,10 +186,38 @@ class Log:
         return cbor2.dumps(self.json())
 
 
+def log_when_env(*args, _stack_ignore=2,**kwargs):
+    """
+            Create `Log` object and send to codeCTRL server in cbor format when the enviorment variable is set
+
+        The codectrl.log function collects and formats information about
+        the file/function/line of code it got called on and sends it to
+        the codeCTRL server, if available.
 
 
+        Usage:
+            The function checks the enviroment variable 'debug_mode' and creates a log object
+            if set to TRUE.
 
-def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> bool:
+
+        Reserved arguments:
+            * _stack_ignore:
+                By default set to `2`. Remove all calls from the stack that happened from
+                within the logging function.
+
+    """
+    debug_mode = os.environ.get('CODECTRL_DEBUG')
+
+    if debug_mode is None:
+        return False
+    if debug_mode.strip().upper() == 'TRUE':
+        log(*args, _stack_ignore, **kwargs)
+    elif debug_mode.strip() == "1":
+        log(*args, _stack_ignore, **kwargs)
+    return True
+
+
+def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwargs) -> bool:
     """
         Create `Log` object and send to codeCTRL server in cbor format.
 
@@ -220,6 +250,10 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> bool:
                 By default `3`, this argument specifies the
                 number of lines of code that should be displayed
                 around the call to `codectrl.log`.
+
+            * _stack_ignore:
+                By default set to `2`. Remove all calls from the stack that happened from
+                within the logging function.
     """
 
     # This makes it easier for users of the library
@@ -237,7 +271,7 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, **kwargs) -> bool:
         return False
 
     # Collect logging data
-    log_obj: Log = Log(surround, *args, **kwargs)
+    log_obj: Log = Log(surround, _stack_ignore,*args, **kwargs)
 
     # Send logging data to server
     soc.send(log_obj.cbor())
