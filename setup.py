@@ -18,13 +18,13 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fd:
     long_description = "\n" + fd.read()
 
 VERSION = "1.0.0"
-DESCRIPTION = "A python logger module for the codeCTRL application"
+DESCRIPTION = "A python logger module for the CodeCTRL application"
 LONG_DESCRIPTION = long_description
 SEARCH_KEYWORDS=[
         "Authentura",
         "authentura",
         "pwnCTRL",
-        "codeCTRL",
+        "CodeCTRL",
         "logging",
         "source code analysis",
         "source code",

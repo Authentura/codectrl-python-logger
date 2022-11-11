@@ -1,11 +1,11 @@
-codeCTRL (python)
+CodeCTRL (python)
 ===============
 
-A python library for the [codeCTRL](https://github.com/pwnCTRL/codeCTRL) logger.
+A python library for the [CodeCTRL](https://github.com/pwnCTRL/CodeCTRL) logger.
 
 The `codectrl.log` function collects and formats information about
 the file/function/line of code it got called on and sends it to
-the codeCTRL server, if available.
+the CodeCTRL server, if available.
 
 Installation
 ------------
@@ -35,9 +35,9 @@ Depending on your python install this may require root privileges.
 
 Usage
 -----
-Make sure you have the [codeCTRL](https://github.com/pwnCTRL/codeCTRL) application running.
+Make sure you have the [CodeCTRL](https://github.com/pwnCTRL/CodeCTRL) application running.
 
-Anywhere in a python codebase you can insert `codectrl.log()` to print logs to the codeCTRL app.
+Anywhere in a python codebase you can insert `codectrl.log()` to print logs to the CodeCTRL app.
 
 
 The function takes any number of arbitrary positional
@@ -52,10 +52,10 @@ to the logs as {key}={value}
 
 ### Reserved arguments:
 * host:
-  By default set to `127.0.0.1`, this argument holds the address of the codeCTRL server.
+  By default set to `127.0.0.1`, this argument holds the address of the CodeCTRL server.
 
 * port:
-  By default set to `3001`, this is the port the codeCTRL server should be contacted at.
+  By default set to `3001`, this is the port the CodeCTRL server should be contacted at.
 
 * surround:
   By default `3`, this argument specifies the number of lines of code that should be displayed around the call to `codectrl.log`.

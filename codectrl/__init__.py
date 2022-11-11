@@ -188,11 +188,11 @@ class Logger:
 
 def log_when_env(*args, _stack_ignore=2,**kwargs):
     """
-            Create `Log` object and send to codeCTRL server in cbor format when the enviorment variable is set
+            Create `Log` object and send to CodeCTRL server in cbor format when the enviorment variable is set
 
         The codectrl.log function collects and formats information about
         the file/function/line of code it got called on and sends it to
-        the codeCTRL server, if available.
+        the CodeCTRL server, if available.
 
 
         Usage:
@@ -219,11 +219,11 @@ def log_when_env(*args, _stack_ignore=2,**kwargs):
 
 def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwargs) -> bool:
     """
-        Create `Log` object and send to codeCTRL server in cbor format.
+        Create `Log` object and send to CodeCTRL server in cbor format.
 
         The codectrl.log function collects and formats information about
         the file/function/line of code it got called on and sends it to
-        the codeCTRL server, if available.
+        the CodeCTRL server, if available.
 
 
         Usage:
@@ -240,11 +240,11 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwarg
         Reserved arguments:
             * host:
                 By default set to `127.0.0.1`, this argument
-                holds the address of the codeCTRL server.
+                holds the address of the CodeCTRL server.
 
             * port:
                 By default set to `30001`, this is the port
-                the codeCTRL server should be contacted at.
+                the CodeCTRL server should be contacted at.
 
             * surround:
                 By default `3`, this argument specifies the
@@ -267,7 +267,7 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwarg
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((host, port))
     except Exception as err: # pylint: disable=broad-except # Could be many things.
-        print(f"[codeCTRL] Could not reach codeCTRL server. {err}", file=sys.stderr)
+        print(f"[CodeCTRL] Could not reach CodeCTRL server. {err}", file=sys.stderr)
         return False
 
     # Collect logging data
