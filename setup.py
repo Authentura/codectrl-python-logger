@@ -17,13 +17,15 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fd:
     long_description = "\n" + fd.read()
 
-VERSION = '0.1.7'
+VERSION = "1.0.0"
 DESCRIPTION = "A python logger module for the codeCTRL application"
 LONG_DESCRIPTION = long_description
 SEARCH_KEYWORDS=[
-        'pwnCTRL',
-        'codeCTRL',
-        'logging',
+        "Authentura",
+        "authentura",
+        "pwnCTRL",
+        "codeCTRL",
+        "logging",
         "source code analysis",
         "source code",
         "analysis",
@@ -32,15 +34,15 @@ SEARCH_KEYWORDS=[
         ]
 
 DEPENDENCIES=[
-        'cbor2==5.4.2 '
+        "cbor2==5.4.2"
         ]
 
 setup(
         name="codectrl",
         version=VERSION,
         license="MIT",
-        author="pwnCTRL",
-        author_email="contact@pwnctrl.com",
+        author="Authentura",
+        author_email="contact@authentura.com",
         description=DESCRIPTION,
         long_description_content_type="text/markdown",
         long_description=LONG_DESCRIPTION,
