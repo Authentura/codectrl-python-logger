@@ -19,7 +19,7 @@ import os
 import cbor2
 
 
-class Log:
+class Logger:
     """
         On initialisation the logger class formats data passed
         to it and other wise collected data to create a json and cbor
@@ -271,7 +271,7 @@ def log(*args, host="127.0.0.1", port=3001, surround=3, _stack_ignore=1, **kwarg
         return False
 
     # Collect logging data
-    log_obj: Log = Log(surround, _stack_ignore,*args, **kwargs)
+    log_obj: Logger = Logger(surround, _stack_ignore,*args, **kwargs)
 
     # Send logging data to server
     soc.send(log_obj.cbor())
