@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -xe
+
 if [[ ! -d ./protos || ! "$(ls -A ./protos)" ]]; then
   git submodule init protos
 fi
@@ -30,3 +32,5 @@ python3 -m grpc_tools.protoc \
   --grpc_python_out=./codectrl/protos \
   ./protos/cc_service.proto \
   ./protos/auth.proto
+
+./patch-protos.sh
