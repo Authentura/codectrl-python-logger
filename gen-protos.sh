@@ -21,16 +21,16 @@ pip install -r ./requirements.txt
 python3 -m grpc_tools.protoc \
   -I=./protos/ \
   --python_out=./codectrl/protos/ \
-  --pyi_out=./codectrl/protos/ \
+  --mypy_out=./codectrl/protos/ \
   ./protos/log.proto \
   ./protos/backtrace_data.proto
 
 python3 -m grpc_tools.protoc \
   -I=./protos/ \
   --python_out=./codectrl/protos/ \
-  --pyi_out=./codectrl/protos/ \
+  --mypy_out=./codectrl/protos/ \
   --grpc_python_out=./codectrl/protos \
   ./protos/cc_service.proto \
   ./protos/auth.proto
 
-./patch-protos.sh
+# ./patch-protos.sh

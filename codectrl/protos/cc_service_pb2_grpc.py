@@ -2,9 +2,9 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . import cc_service_pb2 as cc__service__pb2
+import cc_service_pb2 as cc__service__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
-from . import log_pb2 as log__pb2
+import log_pb2 as log__pb2
 
 
 class LogServerStub(object):

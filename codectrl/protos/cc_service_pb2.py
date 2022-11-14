@@ -11,8 +11,8 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from . import log_pb2 as log__pb2
-from . import auth_pb2 as auth__pb2
+import log_pb2 as log__pb2
+import auth_pb2 as auth__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
