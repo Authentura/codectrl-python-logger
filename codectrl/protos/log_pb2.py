@@ -11,7 +11,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-import backtrace_data_pb2 as backtrace__data__pb2
+from . import backtrace_data_pb2 as backtrace__data__pb2
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tlog.proto\x12\x11\x63odectrl.data.log\x1a\x14\x62\x61\x63ktrace_data.proto\"\xc2\x02\n\x03Log\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12:\n\x05stack\x18\x02 \x03(\x0b\x32+.codectrl.data.backtrace_data.BacktraceData\x12\x12\n\nlineNumber\x18\x03 \x01(\r\x12<\n\x0b\x63odeSnippet\x18\x04 \x03(\x0b\x32\'.codectrl.data.log.Log.CodeSnippetEntry\x12\x0f\n\x07message\x18\x05 \x01(\t\x12\x13\n\x0bmessageType\x18\x06 \x01(\t\x12\x10\n\x08\x66ileName\x18\x07 \x01(\t\x12\x0f\n\x07\x61\x64\x64ress\x18\x08 \x01(\t\x12\x10\n\x08language\x18\t \x01(\t\x12\x10\n\x08warnings\x18\n \x03(\t\x1a\x32\n\x10\x43odeSnippetEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x62\x06proto3')
